@@ -4,7 +4,23 @@
      const student = ['David', ['HTM', 'CSS', 'JS', 'React'], [98, 85, 90, 95]]
      console.log(name, skills, scores)
      console.log(jsScore, reactScore)
-
+const student = ['David', ['HTM', 'CSS', 'JS', 'React'], [98, 85, 90, 95]]
+const [
+  name,
+  [html, css, js, react],
+  [htmlScore, cssScore, jsScore, reactScore]
+] = student
+console.log(
+  name,
+  html,
+  css,
+  js,
+  react,
+  htmlScore,
+  cssScore,
+  jsScore,
+  reactScore
+)
    ```
 	Write a function called convertArrayToObject which can convert the array to a structured object.
 
@@ -14,7 +30,12 @@
 					['John', ['HTM', 'CSS', 'JS', 'React'], [85, 80, 85, 80]]
 				]
 
-			console.log(convertArrayToObject(students))
+const convertArrayToObject = arr =>
+  arr.map(([name, skills, scores]) => {
+    return { name, skills, scores }
+  })
+
+console.log(convertArrayToObject(students))
 			[
 				{
 					name: 'David',
@@ -93,6 +114,42 @@
    c. Find the length of skills object keys
    d. check if the student object has graphicDesign property
    e. Iterate the keys of the student object
+
+   const studentObj = {
+  name: 'David',
+  age: 25,
+  skills: {
+    frontEnd: [
+      { skill: 'HTML', level: 10 },
+      { skill: 'CSS', level: 8 },
+      { skill: 'JS', level: 8 },
+      { skill: 'React', level: 9 }
+    ],
+    backEnd: [
+      { skill: 'Node', level: 7 },
+      { skill: 'GraphQL', level: 8 }
+    ],
+    dataBase: [{ skill: 'MongoDB', level: 7.5 }],
+    dataScience: ['Python', 'R', 'D3.js']
+  }
+}
+const devOps = [
+  { skill: 'AWS', level: 7 },
+  { skill: 'Jenkin', level: 7 },
+  { skill: 'Git', level: 8 }
+]
+const copiedStudentObj = {
+  ...studentObj,
+  skills: {
+    ...studentObj.skills,
+    frontEnd: [...studentObj.skills.frontEnd, { skill: 'Bootstrap', level: 8 }],
+    backEnd: [...studentObj.skills.backEnd, { skill: 'Express', level: 8 }],
+    dataBase: [...studentObj.skills.dataBase, { skill: 'SQL', level: 8 }],
+    dataScience: [...studentObj.skills.dataScience, 'SQL'],
+    devOps: [...devOps]
+  }
+}
+console.log(copiedStudentObj)
 
 2.  Questions:a, b and c are based on the following two arrays:users and products
 	```js
@@ -175,9 +232,129 @@
 		a. Create a function called ***signUp*** which allows user to add to the collection. If user exists, inform the user that he has already an account.
 		b. Create a function called ***signIn*** which allows user to sign in to the application
 
+        const randomId = () => {
+  const numbersLetters = '0123456789abcdefghijklmnopqrstuvwzyzABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(
+    ''
+  );
+  let randId = '';
+  let randIndex;
+  for (let i = 0; i < 6; i++) {
+    randIndex = Math.floor(Math.random() * numbersLetters.length);
+    randId += numbersLetters[randIndex];
+  }
+  return randId;
+};
+const newUser = {
+  _id: randomId(),
+  username: 'Asabeneh',
+  email: 'asabeneh@asabeneh.com',
+  password: '123123123',
+  createdAt: new Date(),
+  isLoggedIn: false
+};
+const signUp = () => {
+  const { email } = newUser;
+  for (const user of users) {
+    if (user['email'] == email) {
+      return 'An email has already exist. Please log in!';
+    }
+  }
+  users.push(newUser);
+  return 'You have successfully signed up!';
+};
+console.log(users);
+console.log(signUp(newUser));
+console.log(signUp(newUser));
+console.log(users);
+const currentUser = {
+  email: 'asabeneh@asabeneh.com',
+  password: '123123123'
+};
+const signIn = user => {
+  let found = false;
+  const { email, password } = user;
+  for (let i = 0; i < users.length; i++) {
+    if (users[i]['email'] === email && users[i]['password'] === password) {
+      users[i].isLoggedIn = true;
+      return 'Successfully logged in';
+    }
+  }
+  if (!found) {
+    return 'Use does not exist';
+  }
+};
+console.log(signIn(currentUser));
+console.log(users);
+console.log(signIn({ email: 'asab@asab.com', password: '123456' }));
+
+
 	b. The products array has  three elements and each of them has six properties. 
 
 		a. Create a function called ***rateProduct*** which rates the product
 		b. Create a function called ***averageRating*** which calculate the average rating of a product
 
+     //a
+const rateProduct = (productId, userId, ratingPoint) => {
+  let found = false;
+  for (let i = 0; i < products.length; i++) {
+    if (products[i]._id === productId) {
+      for (let j = 0; j < products[i].ratings.length; j++) {
+        if (products[i].ratings[j].userId === userId) {
+          const rate = { userId, rate: ratingPoint };
+          products[i].ratings[j].rate = ratingPoint;
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        products[i].ratings.push({ userId, rate: ratingPoint });
+      }
+    }
+  }
+};
+console.log(products);
+rateProduct('eedfcf', 'fg12cy', 5);
+rateProduct('aegfal', 'fg12cy', 2.5);
+rateProduct('aegfal', 'fg12cy', 2.0);
+console.log(products);
+//b
+const averageRating = productId => {
+  let sum = 0;
+  let len; // number of ratings
+  for (let i = 0; i < products.length; i++) {
+    if (products[i]._id === productId) {
+      len = products[i].ratings.length;
+      for (let j = 0; j < len; j++) {
+        if (len === 0) {
+          return 0;
+        } else {
+          sum += products[i].ratings[j].rate;
+        }
+      }
+    }
+  }
+  console.log(len);
+  return sum / len;
+};
+console.log(averageRating('eedfcf'));
+
+		
+
 	c. Create a function called ***likeProduct***. This function will helps to like to the product if it is not liked and remove like if it was liked.
+
+	const likeProduct = (productId, userId) => {
+  for (let i = 0; i < products.length; i++) {
+    if (products[i]._id === productId) {
+      const likes = products[i].likes;
+      const index = products[i].likes.indexOf(userId);
+      if (index !== -1) {
+        products[i].likes.splice(index, 1);
+      } else {
+        products[i].likes.push(userId);
+      }
+    }
+  }
+};
+console.log(likeProduct('aegfal', 'fg12cy'));
+console.log(likeProduct('eedfcf', 'fg12cy'));
+© 2021 GitHub, Inc.
